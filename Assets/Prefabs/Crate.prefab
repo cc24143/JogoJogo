@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 758654202026814163}
   - component: {fileID: 5125411584853133431}
   - component: {fileID: 8818028554099584810}
+  - component: {fileID: -9151258254247261024}
   m_Layer: 0
   m_Name: Crate
   m_TagString: Crate
@@ -140,3 +141,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-9151258254247261024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5295539053834565796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00eee5598008b4b88bb0b1a64e6ecd91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BoxMovement

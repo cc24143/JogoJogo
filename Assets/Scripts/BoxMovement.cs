@@ -1,42 +1,54 @@
-
 using UnityEngine;
 
 public class BoxMovement : MonoBehaviour
 {
-    private bool EmMovimento = false;
-    private float velocidade = 2.0f;
+    private bool inMovement = false;
+    private float velocity = 5.0f;
+    private Vector3 direction = Vector3.right;
 
     void Update()
     {
-        if (EmMovimento)
+        if (inMovement)
         {
-            transform.Translate(
-                Vector3.right * velocidade * Time.deltaTime
-            );
+            transform.Translate(direction * velocity * Time.deltaTime, Space.World);
         }
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Gutter"))
         {
-            EmMovimento = true;
+            CheckAndStop(collision);
         }
     }
 
     void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Gutter"))
         {
-            EmMovimento = true;
+            CheckAndStop(collision);
         }
     }
 
-    void OnCollisionExit(Collision collision)
+    private void CheckAndStop(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        // Pega a normal do primeiro ponto de colisão (aponta para fora da parede)
+        Vector3 wallNormal = collision.contacts[0].normal;
+
+        // Se a direção do movimento for oposta à normal da parede (ou seja, tentando entrar na parede)
+        if (Vector3.Dot(direction, wallNormal) < -0.5f)
         {
-            EmMovimento = false;
+            inMovement = false;
         }
+    }
+
+    public void SetDirection(Vector3 newDirection)
+    {
+        direction = newDirection;
+    }
+
+    public void ChangeMovementStatus()
+    {
+        inMovement = true;
     }
 }

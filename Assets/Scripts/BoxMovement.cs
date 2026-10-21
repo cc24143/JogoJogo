@@ -14,41 +14,43 @@ public class BoxMovement : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collision collision)
+    // Usando OnTriggerEnter para detectar a área das calhas (Gutter)
+    void OnTriggerEnter(Collider collider)
     {
-        if (collision.gameObject.CompareTag("Gutter"))
+        if (collider.CompareTag("Gutter"))
         {
-            CheckAndStop(collision);
+            CheckAndStop(collider);
         }
     }
 
-    void OnCollisionStay(Collision collision)
+    void OnTriggerStay(Collider collider)
     {
-        if (collision.gameObject.CompareTag("Gutter"))
+        if (collider.CompareTag("Gutter"))
         {
-            CheckAndStop(collision);
+            CheckAndStop(collider);
         }
     }
 
-    private void CheckAndStop(Collision collision)
+    private void CheckAndStop(Collider collider)
     {
-        // Pega a normal do primeiro ponto de colisão (aponta para fora da parede)
-        Vector3 wallNormal = collision.contacts[0].normal;
+        // Encontra o ponto mais próximo no collider da calha em relação à caixa
+        Vector3 pontoMaisProximo = collider.ClosestPoint(transform.position);
+        Vector3 direcaoParaParede = (pontoMaisProximo - transform.position).normalized;
 
-        // Se a direção do movimento for oposta à normal da parede (ou seja, tentando entrar na parede)
-        if (Vector3.Dot(direction, wallNormal) < -0.5f)
+        // Se o vetor de movimento atual apontar na direção desse ponto, nós paramos
+        if (Vector3.Dot(direction, direcaoParaParede) > 0.1f)
         {
+            Debug.Log("Stop");
             inMovement = false;
         }
     }
 
-    public void SetDirection(Vector3 newDirection)
+    public void ChangeMovementStatus(Vector3 newDirection)
     {
-        direction = newDirection;
-    }
-
-    public void ChangeMovementStatus()
-    {
-        inMovement = true;
+        if (inMovement == false)
+        {
+            direction = newDirection;
+            inMovement = true;
+        }
     }
 }

@@ -9,6 +9,7 @@ TagManager:
   - Button
   - Crate
   - Orb
+  - Floor
   layers:
   - Default
   - TransparentFX

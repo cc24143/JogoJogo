@@ -1,6 +1,7 @@
 using UnityEngine;
 
-public class BoxMovement : MonoBehaviour
+public class CrateMovement
+ : MonoBehaviour
 {
     private bool inMovement = false;
     private float velocity = 5.0f;

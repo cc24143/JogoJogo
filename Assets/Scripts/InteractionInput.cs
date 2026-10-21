@@ -31,7 +31,7 @@ public class InteractionInput : MonoBehaviour
         {
             // 1. Pega a direção bruta do jogador para o objeto
             Vector3 direcaoBruta = (objetoMaisProximo.transform.position - transform.position).normalized;
-// 
+
             // 2. Alinha a direção para o eixo de 90º mais próximo (Forward, Back, Left, Right)
             Vector3 direcaoAlinhada = Vector3.zero;
 

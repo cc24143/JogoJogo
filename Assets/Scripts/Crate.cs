@@ -3,13 +3,13 @@ using UnityEngine;
 public class Crate : MonoBehaviour, IInteractable
 {
     private Rigidbody rb;
-    private BoxMovement boxMovement;
+    private CrateMovement CreateMovement;
     private BoxCollider boxCollider;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        boxMovement = GetComponent<BoxMovement>();
+        CreateMovement = GetComponent<CrateMovement>();
         boxCollider = GetComponent<BoxCollider>();
         rb.isKinematic = false; 
     }
@@ -24,7 +24,7 @@ public class Crate : MonoBehaviour, IInteractable
 
     public void Interagir(Vector3 direction)
     {
-        if (boxMovement.IsMoving()) return;
+        if (CreateMovement.IsMoving()) return;
 
         // 1. Pegamos as dimensões reais da caixa
         Vector3 tamanhoDoCubo = boxCollider.bounds.size;
@@ -52,7 +52,7 @@ public class Crate : MonoBehaviour, IInteractable
 
         // Se o topo estiver limpo, move a caixa
         rb.isKinematic = true;
-        boxMovement.ChangeMovementStatus(direction);
+        CreateMovement.ChangeMovementStatus(direction);
     }
 
 }

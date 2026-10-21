@@ -8,12 +8,26 @@ public class WalkingInput : MonoBehaviour
     public float maxSpeed = 5f;
     public float baseForce = 10f;
 
+    public float jumpForce = 5f;
+    public Transform groundCheck;
+    public float groundDistance = 0.2f;
+    public LayerMask groundMask;
+
     private Vector2 forceDirection = new();
     private Rigidbody playerRigidbody;
+    private bool isGrounded;
 
     void Start()
     {
         playerRigidbody = GetComponent<Rigidbody>();
+    }
+
+    void Update()
+    {
+        if (groundCheck != null)
+        {
+            isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        }
     }
 
     void FixedUpdate()
@@ -33,6 +47,14 @@ public class WalkingInput : MonoBehaviour
         else
         {
             forceDirection.Set(0, 0);
+        }
+    }
+
+    public void Jump(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed && isGrounded)
+        {
+            playerRigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 }

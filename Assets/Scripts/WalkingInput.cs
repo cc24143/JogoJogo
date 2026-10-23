@@ -6,16 +6,19 @@ using UnityEngine.InputSystem;
 public class WalkingInput : MonoBehaviour
 {
     public float maxSpeed = 5f;
-    public float baseForce = 10f;
-
+    public float walkForce = 10f;
     public float jumpForce = 5f;
-    public Transform groundCheck;
+
     public float groundDistance = 0.2f;
+
+    public Transform groundCheck;
     public LayerMask groundMask;
+
+    private bool isTryingJump;
+    private bool isGrounded;
 
     private Vector2 forceDirection = new();
     private Rigidbody playerRigidbody;
-    private bool isGrounded;
 
     void Start()
     {
@@ -33,9 +36,12 @@ public class WalkingInput : MonoBehaviour
     void FixedUpdate()
     {
         if (Math.Abs(playerRigidbody.linearVelocity.x) <= maxSpeed)
-            playerRigidbody.AddForce(forceDirection.normalized.x * baseForce, 0, 0);
+            playerRigidbody.AddForce(forceDirection.normalized.x * walkForce, 0, 0);
         if (Math.Abs(playerRigidbody.linearVelocity.z) <= maxSpeed)
-            playerRigidbody.AddForce(0, 0, forceDirection.normalized.y * baseForce);
+            playerRigidbody.AddForce(0, 0, forceDirection.normalized.y * walkForce);
+
+        if (isTryingJump && isGrounded)
+            playerRigidbody.AddForce(0, jumpForce, 0);
     }
 
     public void ApplyMovement(InputAction.CallbackContext ctx)
@@ -52,9 +58,13 @@ public class WalkingInput : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext ctx)
     {
-        if (ctx.performed && isGrounded)
+        if (ctx.performed)
         {
-            playerRigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isTryingJump = true;
+        }
+        else
+        {
+            isTryingJump = false;
         }
     }
 }

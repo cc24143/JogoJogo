@@ -1,51 +1,73 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Camera))]
 public class SmoothFollow : MonoBehaviour
 {
-	// The target we are following
-	[SerializeField] private Transform target;
-	// The distance in the x-z plane to the target
-	[SerializeField] private float distance = 10.0f;
-	// the height we want the camera to be above the target
-	[SerializeField] private float height = 5.0f;
+	public Transform target;
+	public float distance = 10.0f;
+	public float height = 5.0f;
 
-	[SerializeField] private float rotationDamping;
-	[SerializeField] private float heightDamping;
+	public float rotationDamping;
+	public float heightDamping;
+	public float rotationSensitivity;
 
-	// Update is called once per frame
-	void LateUpdate()
+	private float mouseRotationAxis = 0;
+	private Camera cam;
+
+    void Start()
+    {
+		Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
+
+		cam = GetComponent<Camera>();
+    }
+
+    void LateUpdate()
 	{
-		// Early out if we don't have a target
 		if (!target)
 		{
 			return;
 		}
 
-		// Calculate the current rotation angles
-		var wantedRotationAngle = target.eulerAngles.y;
-		var wantedHeight = target.position.y + height;
+        var ray = new Ray(target.transform.position, cam.transform.forward);
+		float hitDistance;
+
+        if (Physics.Raycast(ray, out RaycastHit hit, distance)) {
+            Transform objectHit = hit.transform;
+            
+			hitDistance = Vector2.Distance(cam.transform.position, objectHit.position);
+        }
+		else
+		{
+			hitDistance = height;
+		}
+
+		var wantedRotationAngle = target.eulerAngles.y + mouseRotationAxis * rotationSensitivity;
+		var wantedHeight = target.position.y + hitDistance;
 
 		var currentRotationAngle = transform.eulerAngles.y;
 		var currentHeight = transform.position.y;
 
-		// Damp the rotation around the y-axis
 		currentRotationAngle = Mathf.LerpAngle(currentRotationAngle, wantedRotationAngle, rotationDamping * Time.deltaTime);
 
-		// Damp the height
 		currentHeight = Mathf.Lerp(currentHeight, wantedHeight, heightDamping * Time.deltaTime);
 
-		// Convert the angle into a rotation
 		var currentRotation = Quaternion.Euler(0, currentRotationAngle, 0);
 
-		// Set the position of the camera on the x-z plane to:
-		// distance meters behind the target
 		transform.position = target.position;
 		transform.position -= currentRotation * Vector3.forward * distance;
 
-		// Set the height of the camera
-		transform.position = new Vector3(transform.position.x ,currentHeight , transform.position.z);
+		transform.position = new Vector3(transform.position.x, currentHeight, transform.position.z);
 
-		// Always look at the target
 		transform.LookAt(target);
+	}
+
+	public void ChangeRotationMouse(InputAction.CallbackContext ctx)
+	{
+		if (ctx.performed)
+		{
+			mouseRotationAxis += ctx.ReadValue<float>();
+		}
 	}
 }

@@ -3,8 +3,6 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class ObjectGravityController : MonoBehaviour
 {
-    public SmoothFollow cameraFollow; // opcional: se vazio, procura sozinho
-
     private Rigidbody rb;
     private bool isGravityInverted = false;
 
@@ -12,9 +10,6 @@ public class ObjectGravityController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
-
-        if (cameraFollow == null)
-            cameraFollow = FindFirstObjectByType<SmoothFollow>();
     }
 
     void FixedUpdate()
@@ -26,7 +21,6 @@ public class ObjectGravityController : MonoBehaviour
     public void ToggleGravity()
     {
         isGravityInverted = !isGravityInverted;
-        if (cameraFollow != null) cameraFollow.SetInverted(isGravityInverted);
     }
 
     public bool IsGravityInverted() => isGravityInverted;

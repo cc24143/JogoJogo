@@ -13,10 +13,11 @@ public class SmoothFollow : MonoBehaviour
     public float rotationSensitivity = 1f;
 
     [Header("Colisão")]
-    public LayerMask obstacleMask;      // layers que bloqueiam a câmera (chão, paredes, caixas...)
-    public float collisionMargin = 0.3f; // folga para a câmera não ficar colada na parede
+    public LayerMask obstacleMask;
+    public float collisionMargin = 0.3f;
 
     private float mouseRotationAxis = 0;
+    private bool isInverted = false;
 
     void Start()
     {
@@ -24,12 +25,16 @@ public class SmoothFollow : MonoBehaviour
         Cursor.visible = false;
     }
 
+    public void SetInverted(bool inverted) => isInverted = inverted;
+
     void LateUpdate()
     {
         if (!target) return;
 
+        float sign = isInverted ? -1f : 1f;
+
         var wantedRotationAngle = mouseRotationAxis * rotationSensitivity;
-        var wantedHeight = target.position.y + height;
+        var wantedHeight = target.position.y + height * sign;
 
         var currentRotationAngle = transform.eulerAngles.y;
         var currentHeight = transform.position.y;
@@ -52,14 +57,15 @@ public class SmoothFollow : MonoBehaviour
         }
 
         transform.position = desiredPos;
-        transform.LookAt(target);
+
+        // Suaviza a virada: "cima" da câmera acompanha a altura atual
+        Vector3 up = isInverted ? Vector3.down : Vector3.up;
+        transform.LookAt(target, up);
     }
 
     public void ChangeRotationMouse(InputAction.CallbackContext ctx)
     {
         if (ctx.performed)
-        {
             mouseRotationAxis += ctx.ReadValue<float>();
-        }
     }
 }

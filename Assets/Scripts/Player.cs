@@ -3,55 +3,68 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    public Transform groundCheck;   // filho nos pés do player
+    public LayerMask groundMask;
+
     private Rigidbody rb;
     private WalkingInput playerMovement;
-    private BoxCollider boxCollider;
+    private ObjectGravityController gravity;
+    private Transform cam;
+    private SmoothFollow camFollow;
 
     private bool isTryingJump;
     private bool isGrounded;
-    private bool groundedThisFrame;
-
+    private bool cameraInverted = false;
     private Vector2 forceDirection = new();
-    
-    public LayerMask groundMask;
-    private Transform cam;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    private GravityOrb currentOrb; // orb em que o player está dentro (ou null)
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        boxCollider = GetComponent<BoxCollider>();
         playerMovement = GetComponent<WalkingInput>();
+        gravity = GetComponent<ObjectGravityController>();
         cam = Camera.main.transform;
+        camFollow = cam.GetComponent<SmoothFollow>();
     }
 
-    // Update is called once per frame
     void Update()
     {
+        if (groundCheck == null) return;
 
+        Vector3 checkPos = groundCheck.position;
+        if (gravity.IsGravityInverted())
+            checkPos = transform.position + (transform.position - groundCheck.position);
+
+        isGrounded = Physics.CheckSphere(checkPos, playerMovement.groundDistance, groundMask, QueryTriggerInteraction.Ignore);
+
+        // A câmera só acompanha a gravidade quando o player toca a nova superfície
+        if (isGrounded && cameraInverted != gravity.IsGravityInverted())
+        {
+            cameraInverted = gravity.IsGravityInverted();
+            if (camFollow != null) camFollow.SetInverted(cameraInverted);
+        }
     }
 
     void FixedUpdate()
     {
-        isGrounded = groundedThisFrame;
-        groundedThisFrame = false;
+        playerMovement.ApplyMovement(rb, forceDirection, cam);
 
-        performMovement();
         if (isTryingJump && isGrounded)
-            performJump();
+        {
+            playerMovement.Jump(rb, gravity.IsGravityInverted() ? -1f : 1f);
+            isTryingJump = false;
+        }
     }
 
-    void OnCollisionStay(Collision collision)
+    public void SetCurrentOrb(GravityOrb orb)
     {
-        if (((1 << collision.gameObject.layer) & groundMask) == 0) return;
+        currentOrb = orb;
+    }
 
-        foreach (var contact in collision.contacts)
-        {
-            if (contact.normal.y > 0.5f)
-            {
-                groundedThisFrame = true;
-                return;
-            }
-        }
+    public void ClearCurrentOrb(GravityOrb orb)
+    {
+        if (currentOrb == orb) currentOrb = null;
     }
 
     public void ApplyMovement(InputAction.CallbackContext ctx)
@@ -61,16 +74,15 @@ public class Player : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext ctx)
     {
-        isTryingJump = ctx.performed;
-    }
+        if (!ctx.performed) return;
 
-    public void performMovement()
-    {
-        playerMovement.ApplyMovement(rb, forceDirection, cam);
-    }
+        // Dentro do orb, o botão de pular ativa a gravidade e não pula
+        if (currentOrb != null)
+        {
+            currentOrb.Activate(gravity);
+            return;
+        }
 
-    public void performJump()
-    {
-        playerMovement.Jump(rb);
+        isTryingJump = true;
     }
 }

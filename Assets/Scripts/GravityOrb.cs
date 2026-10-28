@@ -2,23 +2,29 @@ using UnityEngine;
 
 public class GravityOrb : MonoBehaviour
 {
-    private bool used = false;
+    public float cooldown = 0.5f; // evita ativar várias vezes seguidas
+
+    private float lastUseTime = -999f;
 
     private void OnTriggerEnter(Collider other)
     {
-        Toggle(other.GetComponentInParent<ObjectGravityController>());
+        Player player = other.GetComponentInParent<Player>();
+        if (player != null) player.SetCurrentOrb(this);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerExit(Collider other)
     {
-        Toggle(collision.gameObject.GetComponentInParent<ObjectGravityController>());
+        Player player = other.GetComponentInParent<Player>();
+        if (player != null) player.ClearCurrentOrb(this);
     }
 
-    private void Toggle(ObjectGravityController controller)
+    // Chamado pelo Player quando ele aperta pular dentro do orb
+    public void Activate(ObjectGravityController controller)
     {
-        if (used || controller == null) return;
-        used = true;
+        if (controller == null) return;
+        if (Time.time - lastUseTime < cooldown) return;
+
+        lastUseTime = Time.time;
         controller.ToggleGravity();
-        Destroy(gameObject);
     }
 }

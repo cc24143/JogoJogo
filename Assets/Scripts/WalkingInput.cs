@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -7,7 +6,6 @@ public class WalkingInput : MonoBehaviour
     public float maxSpeed = 5f;
     public float walkForce = 10f;
     public float jumpForce = 5f;
-
     public float groundDistance = 0.2f;
 
     public void ApplyMovement(Rigidbody playerRigidbody, Vector2 input, Transform cameraTransform)
@@ -29,8 +27,10 @@ public class WalkingInput : MonoBehaviour
         if (horizontalVel.magnitude < maxSpeed)
             playerRigidbody.AddForce(moveDir * walkForce, ForceMode.Acceleration);
     }
-    public void Jump(Rigidbody playerRigidbody)
+
+    // direction: 1 = para cima (normal), -1 = para baixo (gravidade invertida)
+    public void Jump(Rigidbody playerRigidbody, float direction)
     {
-        playerRigidbody.AddForce(0, jumpForce, 0, ForceMode.Impulse);
+        playerRigidbody.AddForce(0, jumpForce * direction, 0, ForceMode.Impulse);
     }
 }

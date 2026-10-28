@@ -48,12 +48,11 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        playerMovement.ApplyMovement(rb, forceDirection, cam);
-
+        performMovement();
         if (isTryingJump && isGrounded)
         {
-            playerMovement.Jump(rb, gravity.IsGravityInverted() ? -1f : 1f);
-            isTryingJump = false;
+            performJump();
+            isTryingJump = false; // um pulo por aperto
         }
     }
 
@@ -84,5 +83,15 @@ public class Player : MonoBehaviour
         }
 
         isTryingJump = true;
+    }
+
+    public void performMovement()
+    {
+        playerMovement.ApplyMovement(rb, forceDirection, cam);
+    }
+
+    public void performJump()
+    {
+        playerMovement.Jump(rb);
     }
 }

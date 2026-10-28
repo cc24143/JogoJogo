@@ -8,7 +8,9 @@ public class GravityOrb : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Player player = other.GetComponentInParent<Player>();
+        if (other.attachedRigidbody == null) return;
+        if (other.gameObject != other.attachedRigidbody.gameObject) return; // ignora colliders filhos
+        var player = other.attachedRigidbody.GetComponent<Player>();
         if (player != null) player.SetCurrentOrb(this);
     }
 

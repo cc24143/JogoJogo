@@ -11,9 +11,11 @@ public class Player : MonoBehaviour
     private ObjectGravityController gravity;
     private Transform cam;
     private SmoothFollow camFollow;
+    private InteractionInput interactionInput;
 
     private bool isTryingJump;
     private bool isGrounded;
+    private bool groundedThisStep;
     private bool cameraInverted = false;
     private Vector2 forceDirection = new();
 
@@ -26,18 +28,12 @@ public class Player : MonoBehaviour
         gravity = GetComponent<ObjectGravityController>();
         cam = Camera.main.transform;
         camFollow = cam.GetComponent<SmoothFollow>();
+        interactionInput = GetComponentInChildren<InteractionInput>();
+        rb.sleepThreshold = 0f; // Unity não chama OnCollisionStay em Rigidbody dormindo
     }
 
     void Update()
     {
-        if (groundCheck == null) return;
-
-        Vector3 checkPos = groundCheck.position;
-        if (gravity.IsGravityInverted())
-            checkPos = transform.position + (transform.position - groundCheck.position);
-
-        isGrounded = Physics.CheckSphere(checkPos, playerMovement.groundDistance, groundMask, QueryTriggerInteraction.Ignore);
-
         // A câmera só acompanha a gravidade quando o player toca a nova superfície
         if (isGrounded && cameraInverted != gravity.IsGravityInverted())
         {
@@ -48,11 +44,14 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        isGrounded = groundedThisStep;
+        groundedThisStep = false;
+
         performMovement();
         if (isTryingJump && isGrounded)
         {
             performJump();
-            isTryingJump = false; // um pulo por aperto
+            isTryingJump = false;
         }
     }
 
@@ -81,8 +80,29 @@ public class Player : MonoBehaviour
             currentOrb.Activate(gravity);
             return;
         }
-
+        else if (interactionInput != null && interactionInput.TentarUsarOrb())
+        {
+            isTryingJump = false;
+            return;
+        }
         isTryingJump = true;
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        if (((1 << collision.gameObject.layer) & groundMask) == 0) return;
+
+        // Gravidade normal: chão tem normal para cima. Invertida: normal para baixo.
+        float up = gravity.IsGravityInverted() ? -1f : 1f;
+
+        foreach (var contact in collision.contacts)
+        {
+            if (contact.normal.y * up > 0.5f)
+            {
+                groundedThisStep = true;
+                return;
+            }
+        }
     }
 
     public void performMovement()
@@ -90,8 +110,8 @@ public class Player : MonoBehaviour
         playerMovement.ApplyMovement(rb, forceDirection, cam);
     }
 
-    public void performJump()
+    public void performJump(bool resetVertical = false)
     {
-        playerMovement.Jump(rb);
+        playerMovement.Jump(rb, resetVertical);
     }
 }

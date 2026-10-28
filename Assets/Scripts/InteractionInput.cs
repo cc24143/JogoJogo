@@ -17,6 +17,8 @@ public class InteractionInput : MonoBehaviour
         // Varre a lista para encontrar o objeto mais perto
         foreach (IInteractable interactable in objetosProximos)
         {
+            if (interactable is JumpOrb) continue;
+            
             float distancia = Vector3.Distance(posicaoPlayer, interactable.transform.position);
 
             if (distancia < menorDistancia)
@@ -49,6 +51,29 @@ public class InteractionInput : MonoBehaviour
             // 3. Envia a direção exata de 90º para o objeto
             objetoMaisProximo.Interagir(direcaoAlinhada);
         }
+    }
+
+    public bool TentarUsarOrb()
+    {
+        JumpOrb maisProximo = null;
+        float menorDistancia = Mathf.Infinity;
+
+        foreach (IInteractable interactable in objetosProximos)
+        {
+            if (interactable is not JumpOrb orb) continue;
+
+            float distancia = Vector3.Distance(transform.position, orb.transform.position);
+            if (distancia < menorDistancia)
+            {
+                menorDistancia = distancia;
+                maisProximo = orb;
+            }
+        }
+
+        if (maisProximo == null) return false;
+
+        maisProximo.Interagir(Vector3.zero);
+        return true;
     }
 
     // Detecta quando um objeto interativo entra no alcance

@@ -37,8 +37,14 @@ public class WalkingInput : MonoBehaviour
     }
 
     // O sentido do pulo vem da gravidade atual do próprio player
-    public void Jump(Rigidbody playerRigidbody)
+    public void Jump(Rigidbody playerRigidbody, bool resetVertical = false)
     {
+        if (resetVertical)
+        {
+            Vector3 vel = playerRigidbody.linearVelocity;
+            vel.y = 0f;
+            playerRigidbody.linearVelocity = vel;
+        }
         float direction = gravity.IsGravityInverted() ? -1f : 1f;
         playerRigidbody.AddForce(0, jumpForce * direction, 0, ForceMode.Impulse);
     }

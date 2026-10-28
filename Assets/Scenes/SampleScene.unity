@@ -274,6 +274,7 @@ MonoBehaviour:
   height: 5
   rotationDamping: 10
   heightDamping: 10
+  rotationSensitivity: 0
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -572,6 +573,42 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7396144946058945035, guid: 272db42a7f1b94f81a14d9534d4c904f, type: 3}
+      propertyPath: m_ActionEvents.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7396144946058945035, guid: 272db42a7f1b94f81a14d9534d4c904f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[3].m_ActionId
+      value: 0488b0d3-9743-4262-9f3d-93d87bc37d37
+      objectReference: {fileID: 0}
+    - target: {fileID: 7396144946058945035, guid: 272db42a7f1b94f81a14d9534d4c904f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[3].m_ActionName
+      value: 'Default/ChangeCameraDireciton[/Mouse/delta/x,/Pen/delta/x]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7396144946058945035, guid: 272db42a7f1b94f81a14d9534d4c904f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1633641505}
+    - target: {fileID: 7396144946058945035, guid: 272db42a7f1b94f81a14d9534d4c904f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1633641505}
+    - target: {fileID: 7396144946058945035, guid: 272db42a7f1b94f81a14d9534d4c904f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyMovement
+      objectReference: {fileID: 0}
+    - target: {fileID: 7396144946058945035, guid: 272db42a7f1b94f81a14d9534d4c904f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Jump
+      objectReference: {fileID: 0}
+    - target: {fileID: 7396144946058945035, guid: 272db42a7f1b94f81a14d9534d4c904f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Player, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7396144946058945035, guid: 272db42a7f1b94f81a14d9534d4c904f, type: 3}
+      propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Player, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 9108071638620108090, guid: 272db42a7f1b94f81a14d9534d4c904f, type: 3}
       propertyPath: baseForce
       value: 20
@@ -579,8 +616,37 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4241541074900530080, guid: 272db42a7f1b94f81a14d9534d4c904f, type: 3}
+      insertIndex: 6
+      addedObject: {fileID: 1633641505}
   m_SourcePrefab: {fileID: 100100000, guid: 272db42a7f1b94f81a14d9534d4c904f, type: 3}
+--- !u!1 &1633641503 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4241541074900530080, guid: 272db42a7f1b94f81a14d9534d4c904f, type: 3}
+  m_PrefabInstance: {fileID: 1633641502}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1633641504 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3722976526324345493, guid: 272db42a7f1b94f81a14d9534d4c904f, type: 3}
+  m_PrefabInstance: {fileID: 1633641502}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1633641505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1633641503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a87d5e080c5e4c4584a3159fab69976, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player
+  groundCheck: {fileID: 1633641504}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1001 &1722342132
 PrefabInstance:
   m_ObjectHideFlags: 0

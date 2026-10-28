@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 8809180146166284178}
   - component: {fileID: 2114108811646308349}
   - component: {fileID: 7396144946058945035}
+  - component: {fileID: 1034516525363833488}
   - component: {fileID: 9108071638620108090}
   m_Layer: 3
   m_Name: Player
@@ -202,8 +203,8 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 9108071638620108090}
-        m_TargetAssemblyTypeName: WalkingInput, Assembly-CSharp
+      - m_Target: {fileID: 1034516525363833488}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
         m_MethodName: ApplyMovement
         m_Mode: 0
         m_Arguments:
@@ -218,8 +219,8 @@ MonoBehaviour:
     m_ActionName: 'Default/Walk[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 9108071638620108090}
-        m_TargetAssemblyTypeName: WalkingInput, Assembly-CSharp
+      - m_Target: {fileID: 1034516525363833488}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
         m_MethodName: Jump
         m_Mode: 0
         m_Arguments:
@@ -248,11 +249,43 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 67d41f57-d877-44d5-8f42-558ab6dbe016
     m_ActionName: 'Default/Interact[/Keyboard/e]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: SmoothFollow, Assembly-CSharp
+        m_MethodName: ChangeRotationMouse
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 0488b0d3-9743-4262-9f3d-93d87bc37d37
+    m_ActionName: 'Default/ChangeCameraDireciton[/Mouse/delta/x,/Pen/delta/x]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Default
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &1034516525363833488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4241541074900530080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a87d5e080c5e4c4584a3159fab69976, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player
+  groundCheck: {fileID: 3722976526324345493}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 384
 --- !u!114 &9108071638620108090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -266,13 +299,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WalkingInput
   maxSpeed: 10
-  baseForce: 40
-  jumpForce: 5
-  groundCheck: {fileID: 3722976526324345493}
+  walkForce: 20
+  jumpForce: 50
   groundDistance: 0.2
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!1 &4263728454444937623
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
 public class WalkingInput : MonoBehaviour
@@ -11,60 +10,27 @@ public class WalkingInput : MonoBehaviour
 
     public float groundDistance = 0.2f;
 
-    public Transform groundCheck;
-    public LayerMask groundMask;
-
-    private bool isTryingJump;
-    private bool isGrounded;
-
-    private Vector2 forceDirection = new();
-    private Rigidbody playerRigidbody;
-
-    void Start()
+    public void ApplyMovement(Rigidbody playerRigidbody, Vector2 input, Transform cameraTransform)
     {
-        playerRigidbody = GetComponent<Rigidbody>();
+        if (input.sqrMagnitude < 0.0001f) return;
+
+        Vector3 camForward = cameraTransform.forward;
+        Vector3 camRight = cameraTransform.right;
+        camForward.y = 0f;
+        camRight.y = 0f;
+        camForward.Normalize();
+        camRight.Normalize();
+
+        Vector3 moveDir = (camForward * input.y + camRight * input.x).normalized;
+
+        Vector3 horizontalVel = playerRigidbody.linearVelocity;
+        horizontalVel.y = 0f;
+
+        if (horizontalVel.magnitude < maxSpeed)
+            playerRigidbody.AddForce(moveDir * walkForce, ForceMode.Acceleration);
     }
-
-    void Update()
+    public void Jump(Rigidbody playerRigidbody)
     {
-        if (groundCheck != null)
-        {
-            isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-        }
-    }
-
-    void FixedUpdate()
-    {
-        if (Math.Abs(playerRigidbody.linearVelocity.x) <= maxSpeed)
-            playerRigidbody.AddForce(forceDirection.normalized.x * walkForce, 0, 0);
-        if (Math.Abs(playerRigidbody.linearVelocity.z) <= maxSpeed)
-            playerRigidbody.AddForce(0, 0, forceDirection.normalized.y * walkForce);
-
-        if (isTryingJump && isGrounded)
-            playerRigidbody.AddForce(0, jumpForce, 0);
-    }
-
-    public void ApplyMovement(InputAction.CallbackContext ctx)
-    {
-        if (ctx.performed)
-        {
-            forceDirection = ctx.ReadValue<Vector2>();
-        }
-        else
-        {
-            forceDirection.Set(0, 0);
-        }
-    }
-
-    public void Jump(InputAction.CallbackContext ctx)
-    {
-        if (ctx.performed)
-        {
-            isTryingJump = true;
-        }
-        else
-        {
-            isTryingJump = false;
-        }
+        playerRigidbody.AddForce(0, jumpForce, 0);
     }
 }

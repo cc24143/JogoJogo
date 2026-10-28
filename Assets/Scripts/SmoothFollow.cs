@@ -17,12 +17,14 @@ public class SmoothFollow : MonoBehaviour
     public float collisionMargin = 0.3f;
 
     private float mouseRotationAxis = 0;
+    private float currentRotationAngle;
     private bool isInverted = false;
 
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        currentRotationAngle = transform.eulerAngles.y;
     }
 
     public void SetInverted(bool inverted) => isInverted = inverted;
@@ -35,8 +37,6 @@ public class SmoothFollow : MonoBehaviour
 
         var wantedRotationAngle = mouseRotationAxis * rotationSensitivity;
         var wantedHeight = target.position.y + height * sign;
-
-        var currentRotationAngle = transform.eulerAngles.y;
         var currentHeight = transform.position.y;
 
         currentRotationAngle = Mathf.LerpAngle(currentRotationAngle, wantedRotationAngle, rotationDamping * Time.deltaTime);
@@ -65,7 +65,9 @@ public class SmoothFollow : MonoBehaviour
 
     public void ChangeRotationMouse(InputAction.CallbackContext ctx)
     {
-        if (ctx.performed)
-            mouseRotationAxis += ctx.ReadValue<float>();
+        if (!ctx.performed) return;
+
+        float delta = ctx.ReadValue<float>();
+        mouseRotationAxis += isInverted ? -delta : delta;
     }
 }

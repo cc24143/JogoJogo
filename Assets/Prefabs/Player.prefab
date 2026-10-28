@@ -283,6 +283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a87d5e080c5e4c4584a3159fab69976, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  groundCheck: {fileID: 0}
   groundMask:
     serializedVersion: 2
     m_Bits: 128
@@ -300,7 +301,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WalkingInput
   maxSpeed: 10
   walkForce: 20
-  jumpForce: 2.5
+  jumpForce: 5
   groundDistance: 0.2
 --- !u!114 &6944506530491456599
 MonoBehaviour:

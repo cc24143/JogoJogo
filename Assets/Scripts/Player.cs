@@ -51,8 +51,8 @@ public class Player : MonoBehaviour
         if (isTryingJump && isGrounded)
         {
             performJump();
-            isTryingJump = false;
         }
+        isTryingJump = false;
     }
 
     public void SetCurrentOrb(GravityOrb orb)

@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.AdaptivePerformance;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
@@ -11,10 +9,10 @@ public class Player : MonoBehaviour
 
     private bool isTryingJump;
     private bool isGrounded;
+    private bool groundedThisFrame;
 
     private Vector2 forceDirection = new();
     
-    public Transform groundCheck;
     public LayerMask groundMask;
     private Transform cam;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -29,18 +27,30 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (groundCheck != null)
-        {
-            isGrounded = Physics.CheckSphere(groundCheck.position, playerMovement.groundDistance, groundMask);
-        }
+
     }
 
     void FixedUpdate()
     {
+        isGrounded = groundedThisFrame;
+        groundedThisFrame = false;
+
         performMovement();
-        if(isTryingJump && isGrounded)
-        {
+        if (isTryingJump && isGrounded)
             performJump();
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        if (((1 << collision.gameObject.layer) & groundMask) == 0) return;
+
+        foreach (var contact in collision.contacts)
+        {
+            if (contact.normal.y > 0.5f)
+            {
+                groundedThisFrame = true;
+                return;
+            }
         }
     }
 

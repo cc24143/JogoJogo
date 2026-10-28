@@ -31,6 +31,6 @@ public class WalkingInput : MonoBehaviour
     }
     public void Jump(Rigidbody playerRigidbody)
     {
-        playerRigidbody.AddForce(0, jumpForce, 0);
+        playerRigidbody.AddForce(0, jumpForce, 0, ForceMode.Impulse);
     }
 }

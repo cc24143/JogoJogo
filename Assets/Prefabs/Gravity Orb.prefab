@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3751737304414667091}
   - component: {fileID: 5742381803921602734}
   - component: {fileID: 8270716320739885394}
+  - component: {fileID: -1752133706080379236}
   m_Layer: 0
   m_Name: Gravity Orb
   m_TagString: Orb
@@ -208,3 +209,16 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &-1752133706080379236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866820214197678655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e275a4f6245d94d398edb4a9825f96e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GravityOrb
+  cooldown: 1

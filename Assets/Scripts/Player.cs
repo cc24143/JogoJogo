@@ -34,8 +34,8 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        // A câmera só acompanha a gravidade quando o player toca a nova superfície
-        if (isGrounded && cameraInverted != gravity.IsGravityInverted())
+        // A câmera acompanha a gravidade assim que ela muda (ao ativar o orbe)
+        if (cameraInverted != gravity.IsGravityInverted())
         {
             cameraInverted = gravity.IsGravityInverted();
             if (camFollow != null) camFollow.SetInverted(cameraInverted);

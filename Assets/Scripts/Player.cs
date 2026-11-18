@@ -47,6 +47,8 @@ public class Player : MonoBehaviour
         isGrounded = groundedThisStep;
         groundedThisStep = false;
 
+        rb.angularVelocity = Vector3.zero;   // <-- novo: só o seu código controla o giro
+
         performMovement();
         if (isTryingJump && isGrounded)
         {
@@ -54,7 +56,6 @@ public class Player : MonoBehaviour
         }
         isTryingJump = false;
     }
-
     public void SetCurrentOrb(GravityOrb orb)
     {
         currentOrb = orb;

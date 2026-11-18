@@ -136,14 +136,6 @@ PrefabInstance:
       value: Jump Orb
       objectReference: {fileID: 0}
     - target: {fileID: 3931271298163873264, guid: 85c1f3032ff3d4ac6889772f21d463b1, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3931271298163873264, guid: 85c1f3032ff3d4ac6889772f21d463b1, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3931271298163873264, guid: 85c1f3032ff3d4ac6889772f21d463b1, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.843318
       objectReference: {fileID: 0}

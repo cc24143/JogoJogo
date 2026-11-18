@@ -15,9 +15,15 @@ public class SmoothFollow : MonoBehaviour
     [Header("Colisão")]
     public LayerMask obstacleMask;
     public float collisionMargin = 0.3f;
+    public float collisionRadius = 0.25f;
+    public float minDistance = 1.5f;
+    public float pivotHeight = 1.5f;       // origem do raycast (altura da cabeça)
+    public float distanceRecoverSpeed = 4f; // velocidade pra "desencolher" a câmera
 
     private float mouseRotationAxis = 0;
     private float currentRotationAngle;
+    private float currentHeight;            // altura SUAVIZADA, independente da colisão
+    private float currentDistance;          // distância SUAVIZADA pós-colisão
     private bool isInverted = false;
 
     void Start()
@@ -25,6 +31,8 @@ public class SmoothFollow : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         currentRotationAngle = transform.eulerAngles.y;
+        currentHeight = transform.position.y;
+        currentDistance = Mathf.Sqrt(distance * distance + height * height);
     }
 
     public void SetInverted(bool inverted) => isInverted = inverted;
@@ -35,32 +43,43 @@ public class SmoothFollow : MonoBehaviour
 
         float sign = isInverted ? -1f : 1f;
 
-        var wantedRotationAngle = mouseRotationAxis * rotationSensitivity;
-        var wantedHeight = target.position.y + height * sign;
-        var currentHeight = transform.position.y;
+        float wantedRotationAngle = mouseRotationAxis * rotationSensitivity;
+        float wantedHeight = target.position.y + height * sign;
 
         currentRotationAngle = Mathf.LerpAngle(currentRotationAngle, wantedRotationAngle, rotationDamping * Time.deltaTime);
         currentHeight = Mathf.Lerp(currentHeight, wantedHeight, heightDamping * Time.deltaTime);
 
         var currentRotation = Quaternion.Euler(0, currentRotationAngle, 0);
 
+        // Posição ideal, sem considerar colisão
         Vector3 desiredPos = target.position - currentRotation * Vector3.forward * distance;
         desiredPos.y = currentHeight;
 
-        Vector3 dir = desiredPos - target.position;
-        float dist = dir.magnitude;
+        // Origem do raycast: perto da cabeça, não dos pés
+        Vector3 origin = target.position + Vector3.up * (pivotHeight * sign);
+        Vector3 dir = desiredPos - origin;
+        float fullDist = dir.magnitude;
+        Vector3 dirN = dir / fullDist;
 
-        if (dist > 0.001f &&
-            Physics.Raycast(target.position, dir / dist, out RaycastHit hit, dist, obstacleMask, QueryTriggerInteraction.Ignore))
+        float allowedDist = fullDist;
+        if (Physics.SphereCast(origin, collisionRadius, dirN, out RaycastHit hit, fullDist,
+                               obstacleMask, QueryTriggerInteraction.Ignore))
         {
-            desiredPos = hit.point - (dir / dist) * collisionMargin;
+            allowedDist = Mathf.Max(hit.distance - collisionMargin, minDistance);
         }
 
-        transform.position = desiredPos;
+        // Aproxima na hora (evita atravessar parede), afasta suavemente (evita tremor)
+        if (allowedDist < currentDistance)
+            currentDistance = allowedDist;
+        else
+            currentDistance = Mathf.Lerp(currentDistance, allowedDist, distanceRecoverSpeed * Time.deltaTime);
 
-        // Suaviza a virada: "cima" da câmera acompanha a altura atual
+        currentDistance = Mathf.Min(currentDistance, fullDist);
+
+        transform.position = origin + dirN * currentDistance;
+
         Vector3 up = isInverted ? Vector3.down : Vector3.up;
-        transform.LookAt(target, up);
+        transform.LookAt(target.position + Vector3.up * (pivotHeight * 0.5f * sign), up);
     }
 
     public void ChangeRotationMouse(InputAction.CallbackContext ctx)

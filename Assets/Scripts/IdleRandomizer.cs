@@ -13,11 +13,14 @@ public class IdleRandomizer : MonoBehaviour
     [Range(0f, 1f)]
     [SerializeField] private float chanceDeAnimar = 0.5f;
 
-    [Header("Triggers do Animator")]
+    [Header("Triggers e Parâmetros do Animator")]
     [SerializeField] private string[] idleTriggers = { "DoBlink", "DoLookAround" };
+    [SerializeField] private string walkingBool = "IsWalking";
+    [SerializeField] private string groundedBool = "IsGrounded";
 
     private Rigidbody rb;
     private WalkingInput walkingInput;
+    private Player player;
     private float tempoParado;
     private float proximaTentativa;
 
@@ -25,6 +28,7 @@ public class IdleRandomizer : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         walkingInput = GetComponent<WalkingInput>();
+        player = GetComponent<Player>();
 
         if (animator == null)
         {
@@ -38,10 +42,19 @@ public class IdleRandomizer : MonoBehaviour
     {
         if (animator == null) return;
 
+        bool noChao = player == null || player.IsGrounded;
         bool apertandoAndar = walkingInput.HasMoveInput;
-        bool rbMovendo = rb.linearVelocity.sqrMagnitude > 0.05f;
+        
+        Vector3 velHorizontal = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        bool rbMovendoHorizontal = velHorizontal.sqrMagnitude > 0.05f;
 
-        if (apertandoAndar || rbMovendo)
+        bool estaAndando = noChao && (apertandoAndar || rbMovendoHorizontal);
+
+        // Atualiza os parâmetros de movimento e chão no Animator
+        animator.SetBool(groundedBool, noChao);
+        animator.SetBool(walkingBool, estaAndando);
+
+        if (!noChao || estaAndando)
         {
             ResetarIdle();
             return;

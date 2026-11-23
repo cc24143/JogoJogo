@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
 
     private bool isTryingJump;
     private bool isGrounded;
+    public bool IsGrounded => isGrounded; // Permite que outros scripts leiam se o robô está no chão
     private bool groundedThisStep;
     private bool cameraInverted = false;
     private Vector2 forceDirection = new();

@@ -1,23 +1,19 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
 
-[RequireComponent(typeof(Light))]
 [RequireComponent(typeof(LensFlareComponentSRP))]
 public class Portal : MonoBehaviour
 {
     [Header("Proporções e Visual")]
 
-    [Range(0f, 1f)] public float maxSizePortal = 1f;
-    [Range(0f, 1f)] public float minSizePortal = 0.2f;
-    public Color initialColorPortal = Color.black;
-    public Color finalColorPortal = Color.white;
+    [Range(0f, 5f)] public float maxSizePortal = 5f;
+    [Range(0f, 5f)] public float minSizePortal = 1f;
 
     [Header("Acesso Portal")]
     public int numAtivacoesMax = 1;
-    public UnityEvent callbackPortalAtivado;
+    public string proximoNivel;
 
     private int numAtivacoesAtual = 0;
     private bool isCallbackPortalAtivado = false;
@@ -33,9 +29,7 @@ public class Portal : MonoBehaviour
     {
         defaultStep = (minSizePortal + maxSizePortal) / numAtivacoesMax;
 
-        portalLight = GetComponent<Light>();
         portalLensFlare = GetComponent<LensFlareComponentSRP>();
-
         UpdateAparencia();
     }
 
@@ -49,10 +43,10 @@ public class Portal : MonoBehaviour
 
         portalLensFlare.scale += (float) 0.0001 * (piscandoDirecao ? -1 : 1);
 
-        if (portalLensFlare.scale >= 1 || portalLensFlare.scale <= 0.95)
+        if (portalLensFlare.scale >= 5.05 || portalLensFlare.scale <= 5)
         {
             piscandoDirecao = !piscandoDirecao;
-            portalLensFlare.scale = (float) Math.Clamp(portalLensFlare.scale, 0.95, 1);
+            portalLensFlare.scale = (float) Math.Clamp(portalLensFlare.scale, 5, 5.05);
         }  
     }
 

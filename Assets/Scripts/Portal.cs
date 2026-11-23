@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(LensFlareComponentSRP))]
 public class Portal : MonoBehaviour
@@ -20,10 +20,10 @@ public class Portal : MonoBehaviour
 
     private float defaultStep = 0f;
 
-    private Light portalLight;
     private LensFlareComponentSRP portalLensFlare;
 
     private bool piscandoDirecao = false;
+    private bool colidindoPortal = false;
 
     void Start()
     {
@@ -33,12 +33,14 @@ public class Portal : MonoBehaviour
         UpdateAparencia();
     }
 
+    void OnTriggerEnter(Collider other) { colidindoPortal = true; }
+    void OnTriggerExit(Collider other) { colidindoPortal = false; }
+
     void LateUpdate()
     {
-        if (isCallbackPortalAtivado)
+        if (isCallbackPortalAtivado && colidindoPortal)
         {
-            callbackPortalAtivado?.Invoke();
-            callbackPortalAtivado = null;
+            SceneManager.LoadScene(proximoNivel);
         }
 
         portalLensFlare.scale += (float) 0.0001 * (piscandoDirecao ? -1 : 1);
@@ -64,8 +66,5 @@ public class Portal : MonoBehaviour
     {
         float currentAtiv = minSizePortal + Math.Min(numAtivacoesAtual, numAtivacoesMax) * defaultStep;
         transform.localScale = new Vector3(currentAtiv, currentAtiv, currentAtiv);
-
-        Color currentCol = Color.Lerp(initialColorPortal, finalColorPortal, Math.Min(numAtivacoesAtual, numAtivacoesMax) / numAtivacoesMax);
-        portalLight.color = currentCol;
     }
 }

@@ -109,7 +109,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -259,12 +259,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Portal
   maxSizePortal: 1
   minSizePortal: 0.2
-  initialColorPortal: {r: 0, g: 0, b: 0, a: 1}
-  finalColorPortal: {r: 1, g: 1, b: 1, a: 1}
   numAtivacoesMax: 1
-  callbackPortalAtivado:
-    m_PersistentCalls:
-      m_Calls: []
+  proximoNivel: 
 --- !u!1 &7725470903031620861
 GameObject:
   m_ObjectHideFlags: 0
@@ -403,7 +399,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

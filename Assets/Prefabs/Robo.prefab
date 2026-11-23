@@ -1438,6 +1438,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eab5340502d34dd2a4fa0f07b3e227f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractionInput
+  animator: {fileID: 0}
+  cooldownInteracao: 0.8
+  tempoAlinhamento: 0.12
+  duracaoTotalAnimacao: 0.8
 --- !u!1 &7782268433637126675
 GameObject:
   m_ObjectHideFlags: 0
@@ -1498,7 +1502,7 @@ Transform:
   m_GameObject: {fileID: 8015817429247965810}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.015759945, z: 0}
+  m_LocalPosition: {x: 0, y: -0.01575994, z: 0}
   m_LocalScale: {x: -0.49760053, y: 0.44130817, z: -0.28052136}
   m_ConstrainProportionsScale: 0
   m_Children: []

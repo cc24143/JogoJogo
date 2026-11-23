@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0018a946fb0e2444689dc3686baa5707
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 417562
+  packageName: Emberpine Camp
+  packageVersion: 1.0
+  assetPath: Assets/EmberpineCamp/Animations/EP_LanternPost.controller
+  uploadId: 1020970

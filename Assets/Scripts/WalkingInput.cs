@@ -19,6 +19,8 @@ public class WalkingInput : MonoBehaviour
     private Transform rotTarget;
     private bool hasDirection = false;
 
+    public bool HasMoveInput { get; private set; }
+
     void Awake()
     {
         gravity = GetComponent<ObjectGravityController>();
@@ -36,7 +38,7 @@ public class WalkingInput : MonoBehaviour
         Vector3 forward = hasDirection ? lastMoveDir : GetCurrentForward();
 
         Quaternion target = Quaternion.LookRotation(forward, up)
-                            * Quaternion.Euler(0f, modelYawOffset, 0f);
+            * Quaternion.Euler(0f, modelYawOffset, 0f);
 
         rotTarget.rotation = Quaternion.RotateTowards(
             rotTarget.rotation, target, turnSpeed * Time.deltaTime);
@@ -52,7 +54,8 @@ public class WalkingInput : MonoBehaviour
 
     public void ApplyMovement(Rigidbody playerRigidbody, Vector2 input, Transform cameraTransform)
     {
-        if (input.sqrMagnitude < 0.0001f) return;
+        HasMoveInput = input.sqrMagnitude >= 0.0001f;
+        if (!HasMoveInput) return;
 
         Vector3 camForward = cameraTransform.forward;
         Vector3 camRight = cameraTransform.right;
@@ -71,6 +74,11 @@ public class WalkingInput : MonoBehaviour
 
         if (horizontalVel.magnitude < maxSpeed)
             playerRigidbody.AddForce(moveDir * walkForce, ForceMode.Acceleration);
+    }
+
+    public void ClearMoveInput()
+    {
+        HasMoveInput = false;
     }
 
     public void Jump(Rigidbody playerRigidbody, bool resetVertical = false)

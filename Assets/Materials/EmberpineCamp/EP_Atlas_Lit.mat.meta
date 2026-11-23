@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 37984b0e8858677459a594ecf5bf650e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 417562
+  packageName: Emberpine Camp
+  packageVersion: 1.0
+  assetPath: Assets/EmberpineCamp/Materials/EP_Atlas_Lit.mat
+  uploadId: 1020970

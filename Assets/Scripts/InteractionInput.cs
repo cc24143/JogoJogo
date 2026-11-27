@@ -11,23 +11,24 @@ public class InteractionInput : MonoBehaviour
 
     private List<IInteractable> objetosProximos = new List<IInteractable>();
     private float ultimaInteracao = -999f;
-    private Transform playerRoot;
+    private Player player;
 
     private void Awake()
     {
-        playerRoot = transform.root; // Pega o objeto pai "Robo"
+        player = GetComponentInParent<Player>();
         if (animator == null)
             animator = GetComponentInParent<Animator>();
     }
 
     public void TentarInteragir()
     {
+        if (player != null && !player.IsGrounded) return;
         if (Time.time - ultimaInteracao < cooldownInteracao) return;
         if (objetosProximos.Count == 0) return;
 
         IInteractable objetoMaisProximo = null;
         float menorDistancia = Mathf.Infinity;
-        Vector3 posicaoPlayer = playerRoot.position;
+        Vector3 posicaoPlayer = player.transform.position;
 
         foreach (IInteractable interactable in objetosProximos)
         {
@@ -56,7 +57,7 @@ public class InteractionInput : MonoBehaviour
             if (animator != null)
                 animator.SetTrigger("DoClick");
 
-            Vector3 direcaoBruta = (objetoMaisProximo.transform.position - playerRoot.position).normalized;
+            Vector3 direcaoBruta = (objetoMaisProximo.transform.position - player.transform.position).normalized;
             Vector3 direcaoAlinhada = Mathf.Abs(direcaoBruta.x) > Mathf.Abs(direcaoBruta.z)
                 ? (direcaoBruta.x > 0 ? Vector3.right : Vector3.left)
                 : (direcaoBruta.z > 0 ? Vector3.forward : Vector3.back);
@@ -67,22 +68,22 @@ public class InteractionInput : MonoBehaviour
 
     private IEnumerator AlinharRobo(Transform destino, Transform alvoBotao)
     {
-        Vector3 posInicial = playerRoot.position;
+        Vector3 posInicial = player.transform.position;
         Vector3 posAlvo = new Vector3(destino.position.x, posInicial.y, destino.position.z);
 
         // Calcula o vetor horizontal apontando do ponto de encaixe direto para o botão,
         // respeitando o "up" atual do robô (funciona tanto na gravidade normal quanto na invertida!)
         Vector3 vetorParaBotao = alvoBotao.position - destino.position;
-        Vector3 direcaoHorizontal = Vector3.ProjectOnPlane(vetorParaBotao, playerRoot.up).normalized;
+        Vector3 direcaoHorizontal = Vector3.ProjectOnPlane(vetorParaBotao, player.transform.up).normalized;
 
         // Se o ponto estiver exatamente no centro do botão, usa a direção do InteractionPoint
         if (direcaoHorizontal.sqrMagnitude < 0.001f)
-            direcaoHorizontal = Vector3.ProjectOnPlane(destino.forward, playerRoot.up).normalized;
+            direcaoHorizontal = Vector3.ProjectOnPlane(destino.forward, player.transform.up).normalized;
 
-        Quaternion rotInicial = playerRoot.rotation;
-        Quaternion rotAlvo = Quaternion.LookRotation(-direcaoHorizontal, playerRoot.up);
+        Quaternion rotInicial = player.transform.rotation;
+        Quaternion rotAlvo = Quaternion.LookRotation(-direcaoHorizontal, player.transform.up);
 
-        Rigidbody rb = playerRoot.GetComponent<Rigidbody>();
+        Rigidbody rb = player.GetComponent<Rigidbody>();
 
         float decorrido = 0f;
         while (decorrido < duracaoTotalAnimacao)
@@ -93,9 +94,9 @@ public class InteractionInput : MonoBehaviour
             if (rb != null)
                 rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
 
-            playerRoot.position = Vector3.Lerp(posInicial, posAlvo, t);
+            player.transform.position = Vector3.Lerp(posInicial, posAlvo, t);
             // Segue impondo rotAlvo durante toda a animação para o WalkingInput não girar de volta
-            playerRoot.rotation = Quaternion.Slerp(rotInicial, rotAlvo, t);
+            player.transform.rotation = Quaternion.Slerp(rotInicial, rotAlvo, t);
 
             yield return null;
         }
@@ -110,7 +111,7 @@ public class InteractionInput : MonoBehaviour
         {
             if (interactable is not JumpOrb orb) continue;
 
-            float distancia = Vector3.Distance(playerRoot.position, orb.transform.position);
+            float distancia = Vector3.Distance(	player.transform.position, orb.transform.position);
             if (distancia < menorDistancia)
             {
                 menorDistancia = distancia;

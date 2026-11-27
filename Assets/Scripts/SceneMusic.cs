@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,29 +8,56 @@ public class SceneMusic : MonoBehaviour
     public AudioClip endingMusic;
 
     private AudioSource audioSource;
+    private static SceneMusic instance;
 
     void Awake()
     {
+        // Se já existe um tocador de música, destrói este duplicado
+        if (instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+
         audioSource = GetComponent<AudioSource>();
-        PlayMusic();
+        audioSource.loop = true;
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        PlayMusicForScene(SceneManager.GetActiveScene().name);
     }
 
-    void PlayMusic()
+    void OnDestroy()
     {
-        string scene = SceneManager.GetActiveScene().name;
+        if (instance == this)
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        PlayMusicForScene(scene.name);
+    }
+
+    void PlayMusicForScene(string scene)
+    {
+        AudioClip newClip = null;
 
         if (scene == "Menu" || scene == "HowToPlayScreen")
-            audioSource.clip = menuMusic;
-
-        else if (scene == "Level1" ||
-                 scene == "Level2" ||
-                 scene == "Level3")
-            audioSource.clip = gameplayMusic;
-
+            newClip = menuMusic;
+        else if (scene == "Level1" || scene == "Level2" || scene == "Level3")
+            newClip = gameplayMusic;
         else if (scene == "EndScreen")
-            audioSource.clip = endingMusic;
+            newClip = endingMusic;
 
-        audioSource.loop = true;
+        // Cena sem música definida: mantém o que está tocando
+        if (newClip == null) return;
+
+        // Mesma música: não faz nada (não reinicia)
+        if (audioSource.clip == newClip && audioSource.isPlaying) return;
+
+        audioSource.clip = newClip;
         audioSource.Play();
     }
 }

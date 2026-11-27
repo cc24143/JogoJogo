@@ -8,6 +8,11 @@ public class MenuManager : MonoBehaviour
         SceneManager.LoadScene("Level1");
     }
 
+    public void ComoJogar()
+    {
+        SceneManager.LoadScene("HowToPlayScreen");
+    }
+
     public void Sair()
     {
         Application.Quit();

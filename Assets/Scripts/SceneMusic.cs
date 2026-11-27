@@ -20,7 +20,7 @@ public class SceneMusic : MonoBehaviour
     {
         string scene = SceneManager.GetActiveScene().name;
 
-        if (scene == "Menu")
+        if (scene == "Menu" || scene == "HowToPlayScreen")
             audioSource.clip = menuMusic;
 
         else if (scene == "Level1" ||

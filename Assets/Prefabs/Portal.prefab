@@ -257,8 +257,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4d23d94c55a3492f9b29307ea362dea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Portal
-  maxSizePortal: 1
-  minSizePortal: 0.2
+  maxSizePortal: 5
+  minSizePortal: 1
   numAtivacoesMax: 1
   proximoNivel: 
 --- !u!1 &7725470903031620861

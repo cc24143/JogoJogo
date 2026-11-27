@@ -4,10 +4,14 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
 
+[RequireComponent(typeof(Canvas))]
 [RequireComponent(typeof(Renderer))]
+[RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(LensFlareComponentSRP))]
 public class Portal : MonoBehaviour
 {
+    private static WaitForSeconds _waitForSeconds5 = new(5);
+    
     [Header("Proporções e Visual")]
     [Range(0f, 5f)] public float maxSizePortal = 5f;
     [Range(0f, 5f)] public float minSizePortal = 1f;
@@ -22,6 +26,10 @@ public class Portal : MonoBehaviour
     [Header("Ação Colisão/Ativação")]
     public UnityEvent acaoColisao = null;
 
+    [Header("Sons")]
+    public AudioClip activationSound = null;
+    public AudioClip activatedSound = null;
+
     private int numAtivacoesAtual = -1;
     private bool callbackExecutado = false;
 
@@ -29,15 +37,22 @@ public class Portal : MonoBehaviour
     private float targetSize;
     private Color targetColor;
 
+    private Canvas canvas;
+    private AudioSource audioSource;
     private LensFlareComponentSRP lensFlare;
     private new Renderer renderer;
 
     void Awake()
     {
+        canvas = GetComponentInChildren<Canvas>();
+        audioSource = GetComponent<AudioSource>();
         lensFlare = GetComponent<LensFlareComponentSRP>();
         renderer = GetComponent<Renderer>();
 
         AtivarSource();
+
+        audioSource.loop = false;
+        canvas.enabled = false;
 
         transform.localScale = Vector3.one * targetSize;
         renderer.material.color = targetColor;
@@ -70,7 +85,30 @@ public class Portal : MonoBehaviour
             targetIntensity = 0.5f * prog;
             targetSize = Mathf.Lerp(minSizePortal, maxSizePortal, prog);
             targetColor = Color.Lerp(minColorPortal, maxColorPortal, prog);
+
+            if (numAtivacoesAtual != numAtivacoesMax && numAtivacoesMax > 0)
+            {
+                if (activationSound != null && numAtivacoesAtual > 0)
+                {
+                    audioSource.PlayOneShot(activationSound);
+                }
+            }
         }
+
+        if (numAtivacoesAtual == numAtivacoesMax || numAtivacoesMax <= 0)
+        {
+            audioSource.PlayOneShot(activatedSound);
+            canvas.enabled = true;
+
+            StartCoroutine(EscondeCanvas());
+        }
+    }
+
+    private IEnumerator EscondeCanvas()
+    {
+        yield return _waitForSeconds5;
+
+        canvas.enabled = false;
     }
 
     private void TentarCallback()

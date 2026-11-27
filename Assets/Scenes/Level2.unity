@@ -5404,6 +5404,14 @@ PrefabInstance:
       propertyPath: allowOffScreen
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7373135592633556665, guid: 83e368e79f6514fe6af64e6521c3c5b8, type: 3}
+      propertyPath: Loop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373135592633556665, guid: 83e368e79f6514fe6af64e6521c3c5b8, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7725470903031620861, guid: 83e368e79f6514fe6af64e6521c3c5b8, type: 3}
       propertyPath: m_Name
       value: Portal
@@ -5439,6 +5447,14 @@ PrefabInstance:
     - target: {fileID: 8247458487904255195, guid: 83e368e79f6514fe6af64e6521c3c5b8, type: 3}
       propertyPath: minColorPortal.r
       value: 0.21698111
+      objectReference: {fileID: 0}
+    - target: {fileID: 8247458487904255195, guid: 83e368e79f6514fe6af64e6521c3c5b8, type: 3}
+      propertyPath: taxaBreathePortal
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8247458487904255195, guid: 83e368e79f6514fe6af64e6521c3c5b8, type: 3}
+      propertyPath: velocidadeCrescimento
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8247458487904255195, guid: 83e368e79f6514fe6af64e6521c3c5b8, type: 3}
       propertyPath: acaoColisao.m_PersistentCalls.m_Calls.Array.size

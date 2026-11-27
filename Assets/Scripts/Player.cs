@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    public Transform groundCheck;   // filho nos pés do player
+    public Transform groundCheck;
     public LayerMask groundMask;
 
     private Rigidbody rb;
@@ -15,12 +15,12 @@ public class Player : MonoBehaviour
 
     private bool isTryingJump;
     private bool isGrounded;
-    public bool IsGrounded => isGrounded; // Permite que outros scripts leiam se o robô está no chão
+    public bool IsGrounded => isGrounded;
     private bool groundedThisStep;
     private bool cameraInverted = false;
     private Vector2 forceDirection = new();
 
-    private GravityOrb currentOrb; // orb em que o player está dentro (ou null)
+    private GravityOrb currentOrb;
 
     void Start()
     {
@@ -30,12 +30,11 @@ public class Player : MonoBehaviour
         cam = Camera.main.transform;
         camFollow = cam.GetComponent<SmoothFollow>();
         interactionInput = GetComponentInChildren<InteractionInput>();
-        rb.sleepThreshold = 0f; // Unity não chama OnCollisionStay em Rigidbody dormindo
+        rb.sleepThreshold = 0f;
     }
 
     void Update()
     {
-        // A câmera acompanha a gravidade assim que ela muda (ao ativar o orbe)
         if (cameraInverted != gravity.IsGravityInverted())
         {
             cameraInverted = gravity.IsGravityInverted();
@@ -48,7 +47,7 @@ public class Player : MonoBehaviour
         isGrounded = groundedThisStep;
         groundedThisStep = false;
 
-        rb.angularVelocity = Vector3.zero;   // <-- novo: só o seu código controla o giro
+        rb.angularVelocity = Vector3.zero;
 
         performMovement();
         if (isTryingJump && isGrounded)
@@ -76,7 +75,6 @@ public class Player : MonoBehaviour
     {
         if (!ctx.performed) return;
 
-        // Dentro do orb, o botão de pular ativa a gravidade e não pula
         if (currentOrb != null)
         {
             currentOrb.Activate(gravity);
@@ -94,7 +92,6 @@ public class Player : MonoBehaviour
     {
         if (((1 << collision.gameObject.layer) & groundMask) == 0) return;
 
-        // Gravidade normal: chão tem normal para cima. Invertida: normal para baixo.
         float up = gravity.IsGravityInverted() ? -1f : 1f;
 
         foreach (var contact in collision.contacts)

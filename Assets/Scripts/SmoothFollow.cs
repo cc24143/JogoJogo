@@ -17,13 +17,13 @@ public class SmoothFollow : MonoBehaviour
     public float collisionMargin = 0.3f;
     public float collisionRadius = 0.25f;
     public float minDistance = 1.5f;
-    public float pivotHeight = 1.5f;       // origem do raycast (altura da cabeça)
-    public float distanceRecoverSpeed = 4f; // velocidade pra "desencolher" a câmera
+    public float pivotHeight = 1.5f;
+    public float distanceRecoverSpeed = 4f;
 
     private float mouseRotationAxis = 0;
     private float currentRotationAngle;
-    private float currentHeight;            // altura SUAVIZADA, independente da colisão
-    private float currentDistance;          // distância SUAVIZADA pós-colisão
+    private float currentHeight;
+    private float currentDistance;
     private bool isInverted = false;
 
     void Start()
@@ -51,11 +51,9 @@ public class SmoothFollow : MonoBehaviour
 
         var currentRotation = Quaternion.Euler(0, currentRotationAngle, 0);
 
-        // Posição ideal, sem considerar colisão
         Vector3 desiredPos = target.position - currentRotation * Vector3.forward * distance;
         desiredPos.y = currentHeight;
 
-        // Origem do raycast: perto da cabeça, não dos pés
         Vector3 origin = target.position + Vector3.up * (pivotHeight * sign);
         Vector3 dir = desiredPos - origin;
         float fullDist = dir.magnitude;
@@ -68,7 +66,6 @@ public class SmoothFollow : MonoBehaviour
             allowedDist = Mathf.Max(hit.distance - collisionMargin, minDistance);
         }
 
-        // Aproxima na hora (evita atravessar parede), afasta suavemente (evita tremor)
         if (allowedDist < currentDistance)
             currentDistance = allowedDist;
         else

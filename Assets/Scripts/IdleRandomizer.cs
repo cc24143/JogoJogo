@@ -50,7 +50,6 @@ public class IdleRandomizer : MonoBehaviour
 
         bool estaAndando = noChao && (apertandoAndar || rbMovendoHorizontal);
 
-        // Atualiza os parâmetros de movimento e chão no Animator
         animator.SetBool(groundedBool, noChao);
         animator.SetBool(walkingBool, estaAndando);
 

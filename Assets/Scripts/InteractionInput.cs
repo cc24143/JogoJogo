@@ -6,8 +6,8 @@ public class InteractionInput : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private float cooldownInteracao = 0.8f;
-    [SerializeField] private float tempoAlinhamento = 0.12f; // Deslize rápido antes de apertar
-    [SerializeField] private float duracaoTotalAnimacao = 0.8f; // Tempo que o robô fica virado para o botão
+    [SerializeField] private float tempoAlinhamento = 0.12f;
+    [SerializeField] private float duracaoTotalAnimacao = 0.8f;
 
     private List<IInteractable> objetosProximos = new List<IInteractable>();
     private float ultimaInteracao = -999f;
@@ -33,7 +33,7 @@ public class InteractionInput : MonoBehaviour
         foreach (IInteractable interactable in objetosProximos)
         {
             if (interactable is JumpOrb) continue;
-            if (interactable is Button b && !b.PodeInteragir) continue; // Ignora botão já apertado
+            if (interactable is Button b && !b.PodeInteragir) continue;
 
             float distancia = Vector3.Distance(posicaoPlayer, interactable.transform.position);
             if (distancia < menorDistancia)
@@ -47,7 +47,6 @@ public class InteractionInput : MonoBehaviour
         {
             ultimaInteracao = Time.time;
 
-            // Se for um Button e tiver Ponto do Jogador configurado, alinha o robô
             if (objetoMaisProximo is Button botao && botao.pontoDoJogador != null)
                 {
                     StopAllCoroutines();
@@ -71,12 +70,9 @@ public class InteractionInput : MonoBehaviour
         Vector3 posInicial = player.transform.position;
         Vector3 posAlvo = new Vector3(destino.position.x, posInicial.y, destino.position.z);
 
-        // Calcula o vetor horizontal apontando do ponto de encaixe direto para o botão,
-        // respeitando o "up" atual do robô (funciona tanto na gravidade normal quanto na invertida!)
         Vector3 vetorParaBotao = alvoBotao.position - destino.position;
         Vector3 direcaoHorizontal = Vector3.ProjectOnPlane(vetorParaBotao, player.transform.up).normalized;
 
-        // Se o ponto estiver exatamente no centro do botão, usa a direção do InteractionPoint
         if (direcaoHorizontal.sqrMagnitude < 0.001f)
             direcaoHorizontal = Vector3.ProjectOnPlane(destino.forward, player.transform.up).normalized;
 
@@ -95,7 +91,6 @@ public class InteractionInput : MonoBehaviour
                 rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
 
             player.transform.position = Vector3.Lerp(posInicial, posAlvo, t);
-            // Segue impondo rotAlvo durante toda a animação para o WalkingInput não girar de volta
             player.transform.rotation = Quaternion.Slerp(rotInicial, rotAlvo, t);
 
             yield return null;

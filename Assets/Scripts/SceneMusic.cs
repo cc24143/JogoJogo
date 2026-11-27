@@ -12,7 +12,6 @@ public class SceneMusic : MonoBehaviour
 
     void Awake()
     {
-        // Se já existe um tocador de música, destrói este duplicado
         if (instance != null)
         {
             Destroy(gameObject);
@@ -51,10 +50,8 @@ public class SceneMusic : MonoBehaviour
         else if (scene == "EndScreen")
             newClip = endingMusic;
 
-        // Cena sem música definida: mantém o que está tocando
         if (newClip == null) return;
 
-        // Mesma música: não faz nada (não reinicia)
         if (audioSource.clip == newClip && audioSource.isPlaying) return;
 
         audioSource.clip = newClip;

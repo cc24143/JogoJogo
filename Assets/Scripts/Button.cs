@@ -20,7 +20,7 @@ public class Button : MonoBehaviour, IInteractable
     [SerializeField] private Transform parteMovel;
     [SerializeField] private Vector3 deslocamentoLocal = new Vector3(0, 0, -0.1f);
     [SerializeField] private float velocidade = 10f;
-    [SerializeField] private Material materialPressionado; // Arraste o ButtonPressedMaterial aqui
+    [SerializeField] private Material materialPressionado;
 
     private bool jaUsado;
     private float ultimoUso = -999f;
@@ -71,7 +71,6 @@ public class Button : MonoBehaviour, IInteractable
         if (atrasoParaAtivar > 0f)
             yield return new WaitForSeconds(atrasoParaAtivar);
 
-        // Troca para o material pressionado assim que a mão encosta
         if (rendererBotao != null && materialPressionado != null)
             rendererBotao.material = materialPressionado;
 
@@ -88,7 +87,6 @@ public class Button : MonoBehaviour, IInteractable
             }
             parteMovel.localPosition = posicaoPressionada;
 
-            // Se não for "Apenas Uma Vez", volta posição e material originais
             if (!apenasUmaVez)
             {
                 yield return new WaitForSeconds(0.15f);

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Rotate : MonoBehaviour
 {
-    [SerializeField] private float velocidade = 50f; // graus por segundo
+    [SerializeField] private float velocidade = 50f;
 
     void Update()
     {
